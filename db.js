@@ -37,3 +37,15 @@ const getUser = async (id=undefined) => {
         console.error(e);
     }
 };
+
+const createUser = async (user) => {
+    try {
+        const conexao = await conectar();
+        await conexao.db('Usuarios').collection('Usuario').insertOne(user);
+        await conexao.close();
+        return `Usuário ${user.nome} adicionado ao MongoDB!`;
+
+    } catch (e) {
+        console.error(e);
+    }
+}
