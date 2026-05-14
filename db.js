@@ -73,7 +73,8 @@ const deleteGame = async (id) => {
         console.error(e);
     }
 }
-console.log(await getGame());
+//createGame({nome: "The Last of Us", genero: "Ação/Aventura", ano: 2013});
+//attGame({nome: "The Last of Us", genero: "Ação/Aventura", plataforma: "PC", preco: 199.90, ano: 2013}, new ObjectId("6a05145bbad00215ce820275"));
 const db = {getGame, createGame, attGame, deleteGame};
 export default db;
 
