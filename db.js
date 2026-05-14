@@ -19,15 +19,15 @@ const conectar = async () => {
     }
 }
 
-const getUser = async (id=undefined) => {
+const getGame = async (id=undefined) => {
     try {
         const conexao = await conectar();
         let resultado = [];
     
         if (!id){
-            resultado = await conexao.db('Usuarios').collection('Usuario').find({}).toArray();
+            resultado = await conexao.db('Biblioteca').collection('Jogos').find({}).toArray();
         } else {
-            resultado = await conexao.db('Usuarios').collection('Usuario').findOne({_id: new ObjectId(id)});
+            resultado = await conexao.db('Biblioteca').collection('Jogos').findOne({_id: new ObjectId(id)});
         }
     
         await conexao.close();
@@ -38,41 +38,42 @@ const getUser = async (id=undefined) => {
     }
 };
 
-const createUser = async (user) => {
+const createGame = async (game) => {
     try {
         const conexao = await conectar();
-        await conexao.db('Usuarios').collection('Usuario').insertOne(user);
+        await conexao.db('Biblioteca').collection('Jogos').insertOne(game);
         await conexao.close();
-        return `Usuário ${user.nome} adicionado ao MongoDB!`;
+        return `Jogo ${game.nome} adicionado ao MongoDB!`;
 
     } catch (e) {
         console.error(e);
     }
 }
 
-const attUser = async (user, id) => {
+const attGame = async (game, id) => {
     try {
         const conexao = await conectar();
-        await conexao.db('Usuarios').collection('Usuario').replaceOne({_id: new ObjectId(id)}, user);
+        await conexao.db('Biblioteca').collection('Jogos').replaceOne({_id: new ObjectId(id)}, game);
         await conexao.close();
-        return `Usuário ${user.nome} atualizado no MongoDB!`;
+        return `Jogo ${game.nome} atualizado no MongoDB!`;
 
     } catch (e) {
         console.error(e);
     }
 }
 
-const deleteUser = async (id) => {
+const deleteGame = async (id) => {
     try {
         const conexao = await conectar();
-        await conexao.db('Usuarios').collection('Usuario').deleteOne({_id: new ObjectId(id)});
+        await conexao.db('Biblioteca').collection('Jogos').deleteOne({_id: new ObjectId(id)});
         await conexao.close();
-        return `Usuário ${id} deletado do MongoDB!`;
+        return `Jogo ${id} deletado do MongoDB!`;
 
     } catch (e) {
         console.error(e);
     }
 }
-
-const db = {getUser, createUser, attUser, deleteUser};
+console.log(await getGame());
+const db = {getGame, createGame, attGame, deleteGame};
 export default db;
+
