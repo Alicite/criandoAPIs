@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 let usuarios = [
-  	{ id: 0, nome: "Leticia"}
+  	{ id: 0, nome: "Marlon"}
 ];
 
 // app.get('/hello/:nome', (req, res) => {
