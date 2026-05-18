@@ -5,47 +5,47 @@ const app = express();
 app.use(express.json());
 
 let usuarios = [
-  	{ id: 0, nome: "Leticia"}
+	{ id: 0, nome: "Leticia" }
 ];
 
-// app.get('/hello/:nome', (req, res) => {
-//     const nome = req.params.nome
-//     if (nome == 'xablau'){
-//       res.status(401).json({
-//         error: 'Não Autorizado!'
-//       })
-//     } else {
-//       res.send(`Hello ${nome}!`);
-//     }
-// });
-
 app.get('/users', async (req, res) => {
-  let resposta = await db.getUser();
+	try {
+		let resposta = await db.getUser();
 
-  if (!resposta[0]){
-		res.send('Nenhum usuário encontrado!');
-	} else {
-		res.send(resposta);
+		if (!resposta[0]) {
+			res.send('Nenhum usuário encontrado!');
+		} else {
+			res.send(resposta);
+		}
+	} catch (e) {
+		res.status(500).send(`Não foi possível buscar os usuários: ${e}`)
 	}
 })
 
-app.get('/users/:id', async(req, res) => {
-	const idUser = req.params.id;
-  const usuario = await db.getUser(idUser);
+app.get('/users/:id', async (req, res) => {
+	try {
+		let id = req.params.id;
+		let resposta = await db.getUser(id);
 
-	if (!usuario) {
-		res.send('Usuário não encontrado!');
-	} else {
-		res.send(usuario);
+		if (!resposta){
+			res.send("Usuário não encontrado");
+		} else {
+			res.send(resposta);
+		}
+		
+	} catch (e) {
+		res.status(500).send(`Não foi possível buscar os usuários: ${e}`)
 	}
 })
 
-app.post('/users', (req, res) => {
-	const nome = req.body.nome;
-	const idUser = usuarios.length;
-
-	usuarios.push({id: idUser, nome});
-	res.send("Usuário criado com sucesso!");
+app.post('/users', async (req, res) => {
+	try {
+		const user = req.body.user;
+		await db.createUser(user)
+		res.send("Usuário criado com sucesso!");
+	} catch (e) {
+		res.status(500).send(`Não foi possível adicionar usuário: ${e}`)
+	}
 })
 
 app.put('/users/:id', (req, res) => {
@@ -69,5 +69,5 @@ app.delete('/users/:id', (req, res) => {
 })
 
 app.listen(3000, () => {
-  	console.log(`Servidor rodando em http://localhost:3000`);
+	console.log(`Servidor rodando em http://localhost:3000`);
 });
