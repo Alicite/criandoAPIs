@@ -4,10 +4,6 @@ import db from './db.js'
 const app = express();
 app.use(express.json());
 
-let usuarios = [
-	{ id: 0, nome: "Leticia" }
-];
-
 app.get('/users', async (req, res) => {
 	try {
 		let resposta = await db.getUser();
@@ -41,33 +37,36 @@ app.get('/users/:id', async (req, res) => {
 app.post('/users', async (req, res) => {
 	try {
 		const user = req.body.user;
-		await db.createUser(user)
-		res.send("Usuário criado com sucesso!");
+		const resultado = await db.createUser(user)
+		res.send(resultado);
 	} catch (e) {
 		res.status(500).send(`Não foi possível adicionar usuário: ${e}`)
 	}
 })
 
-app.put('/users/:id', (req, res) => {
-	const nome = req.body.nome;
-	const idUser = req.params.id;
-	usuarios.forEach((usr) => {
-		if (usr.id == idUser) {
-			usr.nome = nome;
-		}
-	})
-
-	res.send("Usuário atualizado com sucesso!");
+app.put('/users/:id', async (req, res) => {
+	try {
+		const user = req.body.user;
+		const idUser = req.params.id;
+		
+		const resultado = await db.attUser(user, idUser);
+		res.send(resultado);
+	} catch (e) {
+		res.status(500).send(`Não foi possível atualizar usuário: ${e}`)
+	}
 })
 
-app.delete('/users/:id', (req, res) => {
-	const idUser = req.params.id;
-	const usuariosAtt = usuarios.filter((usr) => usr.id != idUser);
-	usuarios = usuariosAtt;
-
-	res.send("Usuário deletado com sucesso!")
+app.delete('/users/:id', async (req, res) => {
+	try {
+		const idUser = req.params.id;
+		const resultado = await db.deleteUser(idUser);
+	
+		res.send(resultado);
+	} catch (e) {
+		res.status(500).send(`Não foi possível deletar usuário: ${e}`)
+	}
 })
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
 	console.log(`Servidor rodando em http://localhost:3000`);
 });
