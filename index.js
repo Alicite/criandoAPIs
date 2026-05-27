@@ -70,3 +70,18 @@ app.delete('/users/:id', async (req, res) => {
 const server = app.listen(3000, () => {
 	console.log(`Servidor rodando em http://localhost:3000`);
 });
+
+process.on('SIGINT', () => {
+  server.close(async (err) => {
+    if (err) {
+      console.error('Erro ao fechar o servidor:', err);
+      process.exit(1);
+    }
+    
+	const con = await db.conectar();
+    await con.close();
+    console.log('Servidor fechado com sucesso.');
+    
+    process.exit(0); // Encerra o processo com sucesso
+  });
+});
