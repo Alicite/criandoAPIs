@@ -30,7 +30,6 @@ const getUser = async (id=undefined) => {
             resultado = await conexao.db('Usuarios').collection('Usuario').findOne({_id: new ObjectId(id)});
         }
     
-        await conexao.close();
         return resultado;
     
     } catch (e) {
@@ -42,7 +41,6 @@ const createUser = async (user) => {
     try {
         const conexao = await conectar();
         await conexao.db('Usuarios').collection('Usuario').insertOne(user);
-        await conexao.close();
         return `Usuário ${user.nome} adicionado ao MongoDB!`;
 
     } catch (e) {
@@ -54,7 +52,6 @@ const attUser = async (user, id) => {
     try {
         const conexao = await conectar();
         await conexao.db('Usuarios').collection('Usuario').replaceOne({_id: new ObjectId(id)}, user);
-        await conexao.close();
         return `Usuário ${user.nome} atualizado no MongoDB!`;
 
     } catch (e) {
@@ -66,7 +63,6 @@ const deleteUser = async (id) => {
     try {
         const conexao = await conectar();
         await conexao.db('Usuarios').collection('Usuario').deleteOne({_id: new ObjectId(id)});
-        await conexao.close();
         return `Usuário ${id} deletado do MongoDB!`;
 
     } catch (e) {
@@ -74,5 +70,6 @@ const deleteUser = async (id) => {
     }
 }
 
-const db = {getUser, createUser, attUser, deleteUser};
+const db = {conectar, getUser, createUser, attUser, deleteUser};
 export default db;
+// console.log(await deleteUser('6a0e5414dbf5fcc8d265cfca'))
