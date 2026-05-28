@@ -1,12 +1,26 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import express from 'express';
-import db from './db.js'
+import 'dotenv/config';
+import db from './db.js';
+
+const URI = process.env.MONGO_DB;
+const client = new MongoClient(URI);
+let conexao;
+
+try {
+	conexao = await client.connect();
+} catch (e) {
+	console.error(error);
+	console.log('Impossível conectar ao MongoDB. Fechando o servidor...');
+    process.exit(0);
+}
 
 const app = express();
 app.use(express.json());
 
 app.get('/users', async (req, res) => {
 	try {
-		let resposta = await db.getUser();
+		let resposta = await db.getUser(conexao);
 
 		if (!resposta[0]) {
 			res.send('Nenhum usuário encontrado!');
@@ -21,7 +35,7 @@ app.get('/users', async (req, res) => {
 app.get('/users/:id', async (req, res) => {
 	try {
 		let id = req.params.id;
-		let resposta = await db.getUser(id);
+		let resposta = await db.getUser(conexao, id);
 
 		if (!resposta){
 			res.send("Usuário não encontrado");
@@ -37,7 +51,7 @@ app.get('/users/:id', async (req, res) => {
 app.post('/users', async (req, res) => {
 	try {
 		const user = req.body.user;
-		const resultado = await db.createUser(user)
+		const resultado = await db.createUser(conexao, user)
 		res.send(resultado);
 	} catch (e) {
 		res.status(500).send(`Não foi possível adicionar usuário: ${e}`)
@@ -49,7 +63,7 @@ app.put('/users/:id', async (req, res) => {
 		const user = req.body.user;
 		const idUser = req.params.id;
 		
-		const resultado = await db.attUser(user, idUser);
+		const resultado = await db.attUser(conexao, user, idUser);
 		res.send(resultado);
 	} catch (e) {
 		res.status(500).send(`Não foi possível atualizar usuário: ${e}`)
@@ -59,7 +73,7 @@ app.put('/users/:id', async (req, res) => {
 app.delete('/users/:id', async (req, res) => {
 	try {
 		const idUser = req.params.id;
-		const resultado = await db.deleteUser(idUser);
+		const resultado = await db.deleteUser(conexao, idUser);
 	
 		res.send(resultado);
 	} catch (e) {
@@ -67,7 +81,7 @@ app.delete('/users/:id', async (req, res) => {
 	}
 })
 
-const server = app.listen(3000, () => {
+const server = app.listen(3000, async () => {
 	console.log(`Servidor rodando em http://localhost:3000`);
 });
 
@@ -78,10 +92,9 @@ process.on('SIGINT', () => {
       process.exit(1);
     }
     
-	const con = await db.conectar();
-    await con.close();
+    await conexao.close();
     console.log('Servidor fechado com sucesso.');
     
-    process.exit(0); // Encerra o processo com sucesso
+    process.exit(0);
   });
 });
