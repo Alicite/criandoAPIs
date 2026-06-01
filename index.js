@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 import express from 'express';
 import 'dotenv/config';
 import db from './db.js';

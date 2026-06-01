@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 const getUser = async (conexao, id=undefined) => {
     try {
         let resultado;
