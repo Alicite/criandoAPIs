@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 import express from 'express';
+import cors from 'cors';
 import 'dotenv/config';
 import db from './db.js';
 
@@ -17,6 +18,7 @@ try {
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get('/users', async (req, res) => {
 	try {
