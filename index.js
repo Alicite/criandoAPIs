@@ -25,12 +25,12 @@ app.get('/users', async (req, res) => {
 		let resposta = await db.getUser(conexao);
 
 		if (!resposta[0]) {
-			res.send('Nenhum usuário encontrado!');
+			res.status(404).json('Nenhum usuário encontrado!');
 		} else {
-			res.send(resposta);
+			res.status(200).json(resposta);
 		}
 	} catch (e) {
-		res.status(500).send(`Não foi possível buscar os usuários: ${e}`)
+		res.status(500).json(`Não foi possível buscar os usuários: ${e}`)
 	}
 })
 
@@ -40,13 +40,13 @@ app.get('/users/:id', async (req, res) => {
 		let resposta = await db.getUser(conexao, id);
 
 		if (!resposta){
-			res.send("Usuário não encontrado");
+			res.status(404).json("Usuário não encontrado");
 		} else {
-			res.send(resposta);
+			res.status(200).json(resposta);
 		}
 		
 	} catch (e) {
-		res.status(500).send(`Não foi possível buscar os usuários: ${e}`)
+		res.status(500).json(`Não foi possível buscar os usuários: ${e}`)
 	}
 })
 
@@ -54,9 +54,9 @@ app.post('/users', async (req, res) => {
 	try {
 		const user = req.body.user;
 		const resultado = await db.createUser(conexao, user)
-		res.send(resultado);
+		res.status(201).json(resultado);
 	} catch (e) {
-		res.status(500).send(`Não foi possível adicionar usuário: ${e}`)
+		res.status(500).json(`Não foi possível adicionar usuário: ${e}`)
 	}
 })
 
@@ -66,9 +66,9 @@ app.put('/users/:id', async (req, res) => {
 		const idUser = req.params.id;
 		
 		const resultado = await db.attUser(conexao, user, idUser);
-		res.send(resultado);
+		res.status(200).json(resultado);
 	} catch (e) {
-		res.status(500).send(`Não foi possível atualizar usuário: ${e}`)
+		res.status(500).json(`Não foi possível atualizar usuário: ${e}`)
 	}
 })
 
@@ -77,9 +77,9 @@ app.delete('/users/:id', async (req, res) => {
 		const idUser = req.params.id;
 		const resultado = await db.deleteUser(conexao, idUser);
 	
-		res.send(resultado);
+		res.status(200).json(resultado);
 	} catch (e) {
-		res.status(500).send(`Não foi possível deletar usuário: ${e}`)
+		res.status(500).json(`Não foi possível deletar usuário: ${e}`)
 	}
 })
 
