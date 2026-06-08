@@ -39,8 +39,8 @@ const attUser = async (conexao, user, id) => {
 
 const deleteUser = async (conexao, id) => {
     try {
-        await conexao.db('Usuarios').collection('Usuario').deleteOne({_id: new ObjectId(id)});
-        return `Usuário ${id} deletado do MongoDB!`;
+        const resposta = await conexao.db('Usuarios').collection('Usuario').findOneAndDelete({_id: new ObjectId(id)});
+        return `Usuário ${resposta.nome} deletado do MongoDB!`;
 
     } catch (e) {
         console.error(e);
